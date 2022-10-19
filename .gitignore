@@ -128,4 +128,3 @@ dmypy.json
 # Pyre type checker
 .pyre/
 /mybill/moneyapp/migrations/
-!/mybill/mybill/settings.py
