@@ -25,27 +25,28 @@
         {% endif %}
         <form method="POST" action="{% url 'expenses' %}">
             {% csrf_token %}
-            <label
-            >Expense name:
-                <input type="text" name="ename" required/>
-            </label>
-            <label
-            >Expense value:
-                <input type="number" name="value" required/>
-
-            </label>
             <label>
-            <div class="grid">
-                <button type="submit">Submit</button>
-                <button type="reset" class="secondary">Reset</button>
-            </div>
-            </label>
-            <label>
-            Expense category:
+                Expense category:
                 <select name="categories" required/>
                 {% for category in categories %}
                 <option value="{{categories}}">{{category.cname}}</option>
                 {% endfor %}
+            </label>
+            <nav>
+            <label>
+            Expense name:
+                <input type="text" name="ename" required/>
+            </label>
+           
+            <label>
+                Expense value:
+                <input type="number" name="value" required/>
+            </label>
+            <label>
+                <div class="grid">
+                    <button type="submit">Submit</button>
+                    <button type="reset" class="secondary">Reset</button>
+                </div>
             </label>
 
 
