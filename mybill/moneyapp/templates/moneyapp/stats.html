@@ -24,10 +24,8 @@
     {% endif %}
     <form method="POST" action="{% url 'stats' %}">
     {% csrf_token %}
-    You are reach my friend
 </body>
 <div>
-    something {{ first_date }} {{date_to}}
 </div>
 </div>
     <div class="grid">
@@ -45,6 +43,6 @@
       <button type="reset" class="secondary">Reset</button>
     </div>
     <div>
-        Your stats from {{ first_date }} to {{ end_date }} : {{ rep }}
+        Your stats from {{ first_date }} to {{ end_date }} : {{ rep }} uah
     </div>
 </html>
