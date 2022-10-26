@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
+<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>Expenses</title>
@@ -26,28 +26,25 @@
         <form method="POST" action="{% url 'expenses' %}">
             {% csrf_token %}
             <label>
-                Expense category:
-                <select name="categories" required/>
-                {% for category in categories %}
-                <option value="{{categories}}">{{category.cname}}</option>
-                {% endfor %}
-            </label>
-            <nav>
-            <label>
-            Expense name:
-                <input type="text" name="ename" required/>
-            </label>
-           
+                Expense name: </label>
+            <input type="text" name="ename" required/>
             <label>
                 Expense value:
                 <input type="number" name="value" required/>
+                <label>
+                    Expense category: </label>
+                <select name="category" required>
+                    {% for category in categories %}
+                    <option value="{{category.id}}">{{category.cname}}</option>
+                    {% endfor %}
+                </select>
             </label>
-            <label>
+
                 <div class="grid">
                     <button type="submit">Submit</button>
                     <button type="reset" class="secondary">Reset</button>
                 </div>
-            </label>
+        </form>
 
 
     </main>

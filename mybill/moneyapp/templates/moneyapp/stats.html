@@ -1,27 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
 <head>
+    <meta charset="UTF-8">
+    <title>Expenses</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css"/>
     <style>
     h1 {text-align: center}
-
     </style>
-    <meta charset="UTF-8">
-    <title>My stats</title>
-    <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css"/>
 </head>
 <h1 style=center">Show me the money!!!!</h1>
 <body>
-<main class="container">
-    <nav style="margin-bottom: 20px; border-bottom: 2px solid; padding-left: 30px">
-        <ul>
-            <li><a href="/" role="button"> Go back to the main page </a></li>
-        </ul>
-    </nav>
-    {% if error%}
+<article data-theme="dark">
+    <main class="container">
+        <nav style="margin-bottom: 20px; border-bottom: 2px solid; padding-left: 30px">
+            <ul>
+                <li><a href="/" role="button"> Go back to the main page </a></li>
+            </ul>
+        </nav>
+        {% if error%}
         <nav>
             <mark>{{ error }}</mark>
         </nav>
-    {% endif %}
+        {% endif %}
     <form method="POST" action="{% url 'stats' %}">
     {% csrf_token %}
 </body>
