@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Category, Expense, User
 from .forms import CategoryForm, CategoryExpense
 from django.db.models import Sum
@@ -15,6 +15,7 @@ def main(request):
     return render(request, 'moneyapp/index.html', {})
 
 
+@login_required
 def category(request):
     if request.method == 'POST':
         try:
@@ -29,6 +30,7 @@ def category(request):
     return render(request, 'moneyapp/category.html', {'form': CategoryForm})
 
 
+@login_required
 def expenses(request):
     category = Category.objects.filter(user_id=request.user).all()
     if request.method == 'POST':
@@ -47,6 +49,7 @@ def expenses(request):
     return render(request, 'moneyapp/expenses.html', {'categories': category})
 
 
+@login_required
 def stats(request):
     if request.method == 'POST':
         first_date = request.POST.get('date_from')
@@ -58,8 +61,17 @@ def stats(request):
             fd = datetime.strptime(str(datetime.now().date()), "%Y-%m-%d")
             ed = datetime.strptime(str(datetime.now().date()), "%Y-%m-%d")
         rep = Expense.objects.filter(user_id=request.user).filter(edate__range=[fd, ed]).aggregate(Sum('evalue'))
+        exp = Expense.objects.filter(user_id=request.user).filter(edate__range=[fd, ed])
+        income = 0
+        outcome = 0
+        for _ in exp:
+            if _.evalue >= 0:
+                income = income + _.evalue
+            else:
+                outcome = outcome + _.evalue
         return render(request, 'moneyapp/stats.html',
-                      {'first_date': first_date, 'end_date': end_date, 'rep': rep['evalue__sum']})
+                      {'first_date': first_date, 'end_date': end_date, 'rep': rep['evalue__sum'], 'income': income,
+                       'outcome': outcome})
     else:
         return render(request, 'moneyapp/stats.html', {})
 
