@@ -57,7 +57,7 @@ def stats(request):
         except ValueError:
             fd = datetime.strptime(str(datetime.now().date()), "%Y-%m-%d")
             ed = datetime.strptime(str(datetime.now().date()), "%Y-%m-%d")
-        rep = Expense.objects.filter(edate__range=[fd, ed]).aggregate(Sum('evalue'))
+        rep = Expense.objects.filter(user_id=request.user).filter(edate__range=[fd, ed]).aggregate(Sum('evalue'))
         return render(request, 'moneyapp/stats.html',
                       {'first_date': first_date, 'end_date': end_date, 'rep': rep['evalue__sum']})
     else:
