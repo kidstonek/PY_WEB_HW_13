@@ -6,25 +6,34 @@
     h1 {text-align: center}
     span {text-align: left}
 
+
     </style>
     <meta charset="UTF-8">
     <title>Mega balance app</title>
 </head>
-<h1 style=center">Show me the money!!!!</h1>
+<h1 style="center">Show me the money!!!!</h1>
 <body>
 <nav style="margin-bottom: 20px; border-bottom: 2px solid; padding-left: 30px">
 </nav>
+
 <div class='container'>
-    <ul>
-        <span><a href="/category/" role="button">Add category</a></span>
-        <span><a href="/expenses/" role="button">Add expenses</a></span>
-        <span><a href="/stats/" role="button">Show my balance</a></span>
-    </ul>
-    <ul>
-        <span><a href="/register/" role="button">Register</a></span>
-        <span><a href="/login/" role="button">Sign in</a></span>
-    </ul>
-
-
+    <nav>
+        {% if user.is_authenticated %}
+        <ul>
+            <li><a href="/category/" role="button">Add category</a></li>
+            <li><a href="/expenses/" role="button">Add expenses</a></li>
+            <li><a href="/stats/" role="button">Show my balance</a></li>
+        </ul>
+        <ul>
+            <li>Welcome <b>{{ user.username }}!</b></li>
+            <li><a href="{% url 'logoutuser' %}" role="button" class="secondary">Logout</a></li>
+        </ul>
+        {% else %}
+        <ul>
+            <li><a href="/register/" role="button" class="secondary">Register</a></li>
+            <li><a href="/login/" role="button" class="contrast">Sign in</a></li>
+        </ul>
+        {% endif %}
+    </nav>
 </body>
 </html>

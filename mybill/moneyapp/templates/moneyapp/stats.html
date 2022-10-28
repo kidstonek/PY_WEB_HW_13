@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css"/>
     <style>
     h1 {text-align: center}
+
     </style>
 </head>
 <h1 style=center">Show me the money!!!!</h1>
@@ -23,27 +24,27 @@
             <mark>{{ error }}</mark>
         </nav>
         {% endif %}
-    <form method="POST" action="{% url 'stats' %}">
-    {% csrf_token %}
+        <form method="POST" action="{% url 'stats' %}">
+            {% csrf_token %}
 </body>
 <div>
 </div>
 </div>
-    <div class="grid">
-      <div>
-    <label >Report start date:</label>
-    <input type="date" name="date_from">
-      </div>
+<div class="grid">
     <div>
-        <label >Report start date:</label>
+        <label>Report start date:</label>
+        <input type="date" name="date_from">
+    </div>
+    <div>
+        <label>Report start date:</label>
         <input type="date" name="date_for">
     </div>
-    </div>
-    <div class="grid">
-      <button type="submit">Submit</button>
-      <button type="reset" class="secondary">Reset</button>
-    </div>
-    <div>
-        Your stats from {{ first_date }} to {{ end_date }} : {{ rep }} uah
-    </div>
+</div>
+<div class="grid">
+    <button type="submit">Submit</button>
+    <button type="reset" class="secondary">Reset</button>
+</div>
+<div>
+    Your stats from {{ first_date }} to {{ end_date }} : {{ rep }} uah
+</div>
 </html>

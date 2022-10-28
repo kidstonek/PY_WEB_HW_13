@@ -1,6 +1,5 @@
-from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
-from .models import Category, Expense
+from .models import Category, Expense, User
 from .forms import CategoryForm, CategoryExpense
 from django.db.models import Sum
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
@@ -13,30 +12,38 @@ from datetime import datetime
 # Create your views here.
 def main(request):
     category = Category.objects.all()
-    return render(request, 'moneyapp/index.html', {'categories': category})
+    return render(request, 'moneyapp/index.html', {})
 
 
 def category(request):
     if request.method == 'POST':
         try:
             form = CategoryForm(request.POST)
-            form.save()
+            category = form.save(commit=False)
+            category.user_id = request.user
+            category.save()
             return redirect(to='/')
-        except ValueError:
+        except ValueError as rrr:
             return render(request, 'moneyapp/category.html',
-                          {'form': CategoryForm, 'error': 'Category name field too long'})
+                          {'form': CategoryForm, 'error': rrr})
     return render(request, 'moneyapp/category.html', {'form': CategoryForm})
 
 
 def expenses(request):
+    category = Category.objects.filter(user_id=request.user).all()
     if request.method == 'POST':
-        ename = request.POST['ename']
-        evalue = request.POST['value']
-        category = request.POST['category']
-        expens = Expense(ename=ename, evalue=evalue, )
-        expens.save()
-        expens.category.add(category)
-    category = Category.objects.all()
+        try:
+            ename = request.POST['ename']
+            evalue = request.POST['value']
+            category = request.POST['category']
+            expens = Expense(ename=ename, evalue=evalue, user_id=request.user)
+            expens.save()
+            expens.category.add(category)
+        except ValueError as rrr:
+            return render(request, 'moneyapp/expenses.html', {'categories': category, 'error': rrr})
+        except IntegrityError as rrr:
+            return render(request, 'moneyapp/expenses.html', {'categories': category, 'error': 'name must be unique'})
+
     return render(request, 'moneyapp/expenses.html', {'categories': category})
 
 
@@ -51,7 +58,8 @@ def stats(request):
             fd = datetime.strptime(str(datetime.now().date()), "%Y-%m-%d")
             ed = datetime.strptime(str(datetime.now().date()), "%Y-%m-%d")
         rep = Expense.objects.filter(edate__range=[fd, ed]).aggregate(Sum('evalue'))
-        return render(request, 'moneyapp/stats.html', {'first_date': first_date, 'end_date': end_date, 'rep': rep['evalue__sum']})
+        return render(request, 'moneyapp/stats.html',
+                      {'first_date': first_date, 'end_date': end_date, 'rep': rep['evalue__sum']})
     else:
         return render(request, 'moneyapp/stats.html', {})
 
@@ -60,18 +68,19 @@ def register_usr(request):
     if request.method == 'GET':
         return render(request, 'moneyapp/register.html', {'form': UserCreationForm()})
     else:
-            if request.POST['password1'] == request.POST['password2']:
-                try:
-                    user = User.objects.create_user(request.POST['username'], password=request.POST['password1'])
-                    user.save()
-                    return redirect('main')
-                except IntegrityError as err:
-                    return render(request, 'moneyapp/register.html',
-                                  {'form': UserCreationForm(), 'error': 'Username already exist!'})
-
-            else:
+        if request.POST['password1'] == request.POST['password2']:
+            try:
+                user = User.objects.create_user(request.POST['username'], password=request.POST['password1'])
+                user.save()
+                return redirect('login_usr')
+            except IntegrityError as err:
                 return render(request, 'moneyapp/register.html',
-                              {'form': UserCreationForm(), 'error': 'Password did not match'})
+                              {'form': UserCreationForm(), 'error': 'Username already exist!'})
+
+        else:
+            return render(request, 'moneyapp/register.html',
+                          {'form': UserCreationForm(), 'error': 'Password did not match'})
+
 
 def login_usr(request):
     if request.method == 'GET':
